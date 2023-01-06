@@ -248,24 +248,30 @@ const DevicePage = observer(() => {
             </tr>
           </thead>
           <tbody>
-            {operData.map((el) => {
-              akk += el.costHandWork || el.costMaterials || el.costServices;
+            {operData?.map((el) => {
+              akk += el?.costHandWork || el?.costMaterials || el.costServices;
               sum +=
-                mapData.area * el.costHandWork ||
-                mapData.area * el.costMaterials ||
-                mapData.area * el.costServices;
+                mapData?.area * el?.costHandWork ||
+                mapData?.area * el?.costMaterials ||
+                mapData?.area * el.costServices;
               return (
-                <tr key={el.id}>
+                <tr key={el?.id}>
                   <td
                     onClick={() => {
                       setUpdate(true);
                       setSecondOpen(true);
+                      setCell(el.cell);
+                      console.log(el);
+                      console.log(map.costServices);
                       const [second] = map[el.cell].filter(
                         (mat) => mat.techOperationId == el.id
                       );
+                      console.log(akk);
                       setAkkum(
                         akk - second.price * (second.consumptionPerHectare || 1)
                       );
+                      console.log(second);
+                      console.log("res");
                       setRes({
                         id: el.id,
                         nameOper: el.nameOperation,
@@ -278,20 +284,20 @@ const DevicePage = observer(() => {
                   >
                     Ред
                   </td>
-                  <td>{el.nameOperation}</td>
-                  <td>{mapData.area}</td>
+                  <td>{el?.nameOperation}</td>
+                  <td>{mapData?.area}</td>
                   <td>{"0"}</td>
                   <td>{"0"}</td>
                   <td>{"0"}</td>
                   <td>{"0"}</td>
-                  <td>{el.costHandWork * mapData.area || "0"}</td>
-                  <td>{el.costMaterials * mapData.area || "0"}</td>
+                  <td>{el.costHandWork * mapData?.area || "0"}</td>
+                  <td>{el.costMaterials * mapData?.area || "0"}</td>
                   <td>{"0"}</td>
-                  <td>{el.costServices * mapData.area || "0"}</td>
+                  <td>{el.costServices * mapData?.area || "0"}</td>
                   <td>
-                    {mapData.area * el.costHandWork ||
-                      mapData.area * el.costMaterials ||
-                      mapData.area * el.costServices}
+                    {mapData?.area * el?.costHandWork ||
+                      mapData?.area * el?.costMaterials ||
+                      mapData?.area * el.costServices}
                   </td>
                   <td
                     className="delet"
