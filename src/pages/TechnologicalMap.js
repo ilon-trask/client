@@ -16,6 +16,7 @@ const DevicePage = observer(() => {
   const [secondOpen, setSecondOpen] = useState(false);
   const [mapOpen, setMapOpen] = useState(false);
   const [cell, setCell] = useState("");
+  const [section, setSection] = useState("");
   const [update, setUpdate] = useState(false);
   const [res, setRes] = useState({
     nameOper: "",
@@ -32,7 +33,7 @@ const DevicePage = observer(() => {
   const { map } = useContext(Context);
   let { id } = useParams();
 
-  let operData = map.opers.filter((el) => el[0]?.techCartId == id);
+  let [operData] = map.opers.filter((el) => el[0]?.techCartId == id);
 
   let [mapData] = map.maps.filter((el) => el.id == id);
 
@@ -247,71 +248,63 @@ const DevicePage = observer(() => {
             </tr>
           </thead>
           <tbody>
-            {operData?.map((elem) => {
-              return elem.map((el) => {
-                akk += el?.costHandWork || el?.costMaterials || el.costServices;
-                sum +=
-                  mapData?.area * el?.costHandWork ||
-                  mapData?.area * el?.costMaterials ||
-                  mapData?.area * el.costServices;
-                return (
-                  <tr key={el?.id}>
-                    <td
-                      onClick={() => {
-                        setUpdate(true);
-                        setSecondOpen(true);
-                        setCell(el.cell);
-                        console.log(el);
-                        console.log(map.costServices);
-                        const [second] = map[el.cell].filter(
-                          (mat) => mat.techOperationId == el.id
-                        );
-                        console.log(akk);
-                        setAkkum(
-                          akk -
-                            second.price * (second.consumptionPerHectare || 1)
-                        );
-                        console.log(second);
-                        console.log("res");
-                        setRes({
-                          id: el.id,
-                          nameOper: el.nameOperation,
-                          price: second.price,
-                          unitsOfCost: second.unitsOfCost,
-                          amount: second.consumptionPerHectare,
-                          unitsOfConsumption: second.unitsOfConsumption,
-                        });
-                      }}
-                    >
-                      Ред
-                    </td>
-                    <td>{el?.nameOperation}</td>
-                    <td>{mapData?.area}</td>
-                    <td>{"0"}</td>
-                    <td>{"0"}</td>
-                    <td>{"0"}</td>
-                    <td>{"0"}</td>
-                    <td>{el.costHandWork * mapData?.area || "0"}</td>
-                    <td>{el.costMaterials * mapData?.area || "0"}</td>
-                    <td>{"0"}</td>
-                    <td>{el.costServices * mapData?.area || "0"}</td>
-                    <td>
-                      {mapData?.area * el?.costHandWork ||
-                        mapData?.area * el?.costMaterials ||
-                        mapData?.area * el.costServices}
-                    </td>
-                    <td
-                      className="delet"
-                      onClick={() => {
-                        deleteOper(map, el.id, el, id, akk);
-                      }}
-                    >
-                      видалити
-                    </td>
-                  </tr>
-                );
-              });
+            {operData.map((el) => {
+              akk += el.costHandWork || el.costMaterials || el.costServices;
+              sum +=
+                mapData.area * el.costHandWork ||
+                mapData.area * el.costMaterials ||
+                mapData.area * el.costServices;
+              return (
+                <tr key={el.id}>
+                  <td
+                    onClick={() => {
+                      setUpdate(true);
+                      setSecondOpen(true);
+                      const [second] = map[el.cell].filter(
+                        (mat) => mat.techOperationId == el.id
+                      );
+                      setAkkum(
+                        akk - second.price * (second.consumptionPerHectare || 1)
+                      );
+                      setRes({
+                        id: el.id,
+                        nameOper: el.nameOperation,
+                        price: second.price,
+                        unitsOfCost: second.unitsOfCost,
+                        amount: second.consumptionPerHectare,
+                        unitsOfConsumption: second.unitsOfConsumption,
+                      });
+                    }}
+                  >
+                    Ред
+                  </td>
+                  <td>{el.nameOperation}</td>
+                  <td>{mapData.area}</td>
+                  <td>{"0"}</td>
+                  <td>{"0"}</td>
+                  <td>{"0"}</td>
+                  <td>{"0"}</td>
+                  <td>{el.costHandWork * mapData.area || "0"}</td>
+                  <td>{el.costMaterials * mapData.area || "0"}</td>
+                  <td>{"0"}</td>
+                  <td>{el.costServices * mapData.area || "0"}</td>
+                  <td>
+                    {mapData.area * el.costHandWork ||
+                      mapData.area * el.costMaterials ||
+                      mapData.area * el.costServices}
+                  </td>
+                  <td
+                    className="delet"
+                    onClick={() => {
+                      deleteOper(map, el.id, el, id, akk);
+                    }}
+                  >
+                    видалити
+                  </td>
+                </tr>
+              );
             })}
+
             <tr>
               <td></td>
               <td>Загальні витрати</td>
@@ -346,6 +339,8 @@ const DevicePage = observer(() => {
         setSecondOpen={setSecondOpen}
         cell={cell}
         setCell={setCell}
+        section={section}
+        setSection={setSection}
       />
 
       {cell == "costMaterials" ? (
@@ -354,6 +349,8 @@ const DevicePage = observer(() => {
           setOpen={setSecondOpen}
           cell={cell}
           setCell={setCell}
+          section={section}
+          setSection={setSection}
           akk={akk}
           akkum={akkum}
           res={res}
@@ -367,6 +364,8 @@ const DevicePage = observer(() => {
           setOpen={setSecondOpen}
           cell={cell}
           setCell={setCell}
+          section={section}
+          setSection={setSection}
           akk={akk}
           akkum={akkum}
           res={res}

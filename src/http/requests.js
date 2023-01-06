@@ -1,4 +1,5 @@
 const CARTuRL = "http://localhost:5000/api/cart";
+const SECuRL = "http://localhost:5000/api/sec";
 
 export function getCarts(map) {
   return fetch(CARTuRL)
@@ -138,4 +139,10 @@ export function patchOperation(map, arr, id, akkum) {
   }).then(() => {
     getCarts(map);
   });
+}
+
+export function getSection(map) {
+  fetch(SECuRL)
+    .then((data) => data.json())
+    .then((res) => (map.section = res));
 }

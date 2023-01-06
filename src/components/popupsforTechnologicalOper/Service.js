@@ -11,6 +11,8 @@ const Easy = observer(
     setOpen,
     cell,
     setCell,
+    section,
+    setSection,
     akk,
     akkum,
     res,
@@ -94,7 +96,6 @@ const Easy = observer(
                 } else {
                   setOpen(false);
                   setCell("");
-                  const request = { cell, res };
                   setRes({
                     nameOper: "",
                     price: "",
@@ -103,6 +104,7 @@ const Easy = observer(
                     unitsOfConsumption: "",
                   });
                   setIsErr(false);
+                  const request = { cell, res, section };
                   if (update) {
                     console.log("upd");
                     console.log(akk);

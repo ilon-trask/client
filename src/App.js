@@ -5,12 +5,13 @@ import { authRoutes, publicRoutes } from "./routes";
 import css from "./App.css";
 import { useContext, useEffect } from "react";
 import { Context } from "./index";
-import { getCarts } from "./http/requests";
+import { getCarts, getSection } from "./http/requests";
 
 function App() {
   const { map } = useContext(Context);
   useEffect(() => {
     getCarts(map);
+    getSection(map);
   }, []);
 
   return (
