@@ -9,6 +9,7 @@ import Service from "../components/popupsforTechnologicalOper/Service";
 import MapInputs from "../components/MapInputs";
 
 import { Context } from "../index";
+import { deleteOper, getOnlyCart } from "../http/requests";
 
 const DevicePage = observer(() => {
   const [open, setOpen] = useState(false);
@@ -30,64 +31,11 @@ const DevicePage = observer(() => {
 
   const { map } = useContext(Context);
   let { id } = useParams();
-  function deleteOper(ind, elem) {
-    console.log(elem);
-    fetch(`http://localhost:5000/api/cart/${id}/${ind}`, {
-      method: "DELETE",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify([elem, akk]),
-    }).then(() => {
-      map.opers = [];
-      let ids = map.maps.map((el) => el.id);
-      for (let i = 0; i < ids.length; i++) {
-        getOpers(ids[i]);
-      }
-    });
-  }
+
   let operData = map.opers.filter((el) => el[0]?.techCartId == id);
 
   let [mapData] = map.maps.filter((el) => el.id == id);
-  function getMaps() {
-    fetch("http://localhost:5000/api/cart")
-      .then((res) => res.json())
-      .then((res) => {
-        console.log(res);
-        map.maps = [];
-        map.maps = res;
-      })
-      .then(() => {
-        console.log(map.maps);
-      });
-  }
-  function getOpers(id) {
-    fetch("http://localhost:5000/api/cart/" + id)
-      .then((res) => res.json())
-      .then((res) => {
-        map.costMaterials = [];
-        map.costServices = [];
-        res.forEach((el) => {
-          getProps(id, el.id, el.cell);
-        });
-        map.newOper = res;
-      });
-  }
-  function getProps(id, el, cell) {
-    console.log(id);
-    console.log(el);
-    fetch(`http://localhost:5000/api/cart/${id}/${el}/${cell}`)
-      .then((res) => res.json())
-      .then((el) => {
-        if (cell == "costMaterials") {
-          map.newCostMaterials = el[0];
-        } else if (cell == "costServices") {
-          console.log(el[0]);
-          map.newCostServices = el[0];
-        }
-      });
-  }
+
   let th = { fontSize: "18px", padding: "0 10px 0 10px" };
   let sum = 0;
   let akk = 0;
@@ -99,7 +47,7 @@ const DevicePage = observer(() => {
         <Link
           to="/"
           onClick={() => {
-            getMaps();
+            getOnlyCart(map);
           }}
         >
           {"<НА ГОЛОВНУ"}
@@ -355,8 +303,7 @@ const DevicePage = observer(() => {
                     <td
                       className="delet"
                       onClick={() => {
-                        deleteOper(el.id, el);
-                        console.log(el.id);
+                        deleteOper(map, el.id, el, id, akk);
                       }}
                     >
                       видалити
@@ -407,7 +354,6 @@ const DevicePage = observer(() => {
           setOpen={setSecondOpen}
           cell={cell}
           setCell={setCell}
-          getOpers={getOpers}
           akk={akk}
           akkum={akkum}
           res={res}
@@ -421,7 +367,6 @@ const DevicePage = observer(() => {
           setOpen={setSecondOpen}
           cell={cell}
           setCell={setCell}
-          getOpers={getOpers}
           akk={akk}
           akkum={akkum}
           res={res}
@@ -439,9 +384,6 @@ const DevicePage = observer(() => {
         setUpdate={setUpdate}
         res={mapRes}
         setRes={setMapRes}
-        getMaps={getMaps}
-        createMap={console.log(2)}
-        URL={URL}
       />
     </Container>
   );

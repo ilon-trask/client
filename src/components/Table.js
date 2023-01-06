@@ -5,7 +5,9 @@ import { observer } from "mobx-react-lite";
 import { Context } from "../index";
 import { TEHMAP_ROUTER } from "../utils/consts";
 
-const Table = observer(({ data, setRes, setOpen, setUpdate, delet }) => {
+import { deleteCart } from "../http/requests";
+
+const Table = observer(({ data, setRes, setOpen, setUpdate }) => {
   const { map } = useContext(Context);
   let th = { fontSize: "18px", padding: "0 10px 0 10px" };
 
@@ -76,7 +78,7 @@ const Table = observer(({ data, setRes, setOpen, setUpdate, delet }) => {
             <td
               className="delet"
               onClick={() => {
-                delet(e.id);
+                deleteCart(map, e.id);
               }}
             >
               видалити

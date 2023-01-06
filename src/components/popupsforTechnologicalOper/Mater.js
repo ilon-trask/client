@@ -4,13 +4,13 @@ import { Context } from "../../index";
 import css from "../../components/Dialog.module.css";
 import { observer } from "mobx-react-lite";
 
+import { getOpers, createOperation, patchOperation } from "../../http/requests";
 const Easy = observer(
   ({
     open,
     setOpen,
     cell,
     setCell,
-    getOpers,
     akk,
     akkum,
     res,
@@ -19,74 +19,8 @@ const Easy = observer(
     setUpdate,
   }) => {
     const { map } = useContext(Context);
-    const id = useParams();
-    console.log(id.id);
-
+    const { id } = useParams();
     const [isErr, setIsErr] = useState(false);
-
-    const URL = `http://localhost:5000/api/cart/${id.id}`;
-    function createOperation(arr) {
-      fetch(URL, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          cartId: id.id,
-          sum: akk + arr.res.price * arr.res.amount,
-          arr,
-        }),
-      })
-        .then(() => {
-          console.log(4);
-          getMaps();
-        })
-        .then(() => {
-          console.log(1);
-          map.opers = [];
-          let ids = map.maps.map((el) => el.id);
-          for (let i = 0; i < ids.length; i++) {
-            getOpers(ids[i]);
-          }
-        });
-    }
-    function patchOperation(arr) {
-      fetch(URL, {
-        method: "PATCH",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          cartId: id.id,
-          sum: akkum + arr.res.price * arr.res.amount,
-          arr,
-        }),
-      })
-        .then(() => {
-          getMaps();
-        })
-        .then(() => {
-          map.opers = [];
-          let ids = map.maps.map((el) => el.id);
-          for (let i = 0; i < ids.length; i++) {
-            getOpers(ids[i]);
-          }
-        });
-    }
-    function getMaps() {
-      fetch("http://localhost:5000/api/cart")
-        .then((res) => res.json())
-        .then((res) => {
-          console.log(res);
-          map.maps = [];
-          map.maps = res;
-        })
-        .then(() => {
-          console.log(map.maps);
-        });
-    }
     return (
       <div
         style={open ? { display: "flex" } : { display: "none" }}
@@ -193,10 +127,10 @@ const Easy = observer(
                   if (update) {
                     console.log("upd");
                     console.log(akk);
-                    patchOperation(request);
+                    patchOperation(map, request, id, akkum);
                   } else {
                     console.log(3);
-                    createOperation(request);
+                    createOperation(map, request, id, akk);
                   }
                 }
               }}

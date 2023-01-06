@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Context } from "../index";
 import css from "./Dialog.module.css";
+import { createCart, updateMap } from "../http/requests";
 
 export default function MapInputs({
   open,
@@ -9,24 +10,9 @@ export default function MapInputs({
   setUpdate,
   res,
   setRes,
-  getMaps,
-  createMap,
-  URL,
 }) {
   let { map } = useContext(Context);
   let [err, setErr] = useState(false);
-
-  function updateMap(res) {
-    fetch("http://localhost:5000/api/cart", {
-      method: "PATCH",
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-      },
-      body: JSON.stringify(res),
-    }).then(() => {
-      getMaps();
-    });
-  }
 
   return (
     <div
@@ -115,10 +101,10 @@ export default function MapInputs({
                 setOpen(false);
                 setRes({ nameCart: "", area: "", salary: "", priceDiesel: "" });
                 if (update) {
-                  updateMap(res);
+                  updateMap(map, res);
                   console.log("upd");
                 } else {
-                  createMap(res);
+                  createCart(map, res);
                 }
                 setUpdate(false);
               }
