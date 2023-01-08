@@ -7,6 +7,7 @@ import OperSection from "../components/popupsforTechnologicalOper/OperSection";
 import Easy from "../components/popupsforTechnologicalOper/Mater";
 import Service from "../components/popupsforTechnologicalOper/Service";
 import MapInputs from "../components/MapInputs";
+import MechanicalWork from "../components/popupsforTechnologicalOper/MechanicalWork";
 
 import { Context } from "../index";
 import { deleteOper, getOnlyCart } from "../http/requests";
@@ -248,7 +249,7 @@ const DevicePage = observer(() => {
             </tr>
           </thead>
           <tbody>
-            {operData.map((el) => {
+            {operData?.map((el) => {
               akk += el.costHandWork || el.costMaterials || el.costServices;
               sum +=
                 mapData.area * el.costHandWork ||
@@ -274,6 +275,7 @@ const DevicePage = observer(() => {
                         amount: second.consumptionPerHectare,
                         unitsOfConsumption: second.unitsOfConsumption,
                       });
+                      setCell(el.cell);
                     }}
                   >
                     Ред
@@ -360,6 +362,21 @@ const DevicePage = observer(() => {
         />
       ) : cell == "costServices" ? (
         <Service
+          open={secondOpen}
+          setOpen={setSecondOpen}
+          cell={cell}
+          setCell={setCell}
+          section={section}
+          setSection={setSection}
+          akk={akk}
+          akkum={akkum}
+          res={res}
+          setRes={setRes}
+          update={update}
+          setUpdate={setUpdate}
+        />
+      ) : cell == "costMechanical" ? (
+        <MechanicalWork
           open={secondOpen}
           setOpen={setSecondOpen}
           cell={cell}
