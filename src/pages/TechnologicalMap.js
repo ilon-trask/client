@@ -28,7 +28,7 @@ const DevicePage = observer(() => {
   const [res, setRes] = useState({
     nameOper: "",
     price: "",
-    // amount: "",
+    amount: "",
   });
   const [mapRes, setMapRes] = useState({
     nameCart: "",
@@ -255,7 +255,6 @@ const DevicePage = observer(() => {
           </thead>
           <tbody>
             {operData?.map((el) => {
-              console.log(1);
               akk +=
                 el.costHandWork ||
                 el.costMaterials ||
@@ -412,7 +411,7 @@ const DevicePage = observer(() => {
           setUpdate={setUpdate}
           func={threeInputs}
         >
-          <Transport akkum={akkum} res={res} />
+          <Transport res={res} setRes={setRes} />
         </PopupField>
       ) : cell === "costMechanical" ? (
         <MechanicalWork

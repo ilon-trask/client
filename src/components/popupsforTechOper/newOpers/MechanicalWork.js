@@ -23,7 +23,7 @@ const MechanicalWork = ({
   const [isErr, setIsErr] = useState(false);
   return (
     <div
-      style={false ? { display: "flex" } : { display: "none" }}
+      style={open ? { display: "flex" } : { display: "none" }}
       className={css.dialog}
       onClick={() => {
         setOpen(false);
