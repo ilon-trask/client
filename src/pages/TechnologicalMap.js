@@ -14,6 +14,7 @@ import PopupField from "../components/popupsforTechOper/newOpers/PopupField";
 import {
   fiveInputs,
   threeInputs,
+  MechanicalWorkFunc,
 } from "../components/popupsforTechOper/newOpers/funs";
 import { Context } from "../index";
 import { deleteOper, getOnlyCart } from "../http/requests";
@@ -259,35 +260,57 @@ const DevicePage = observer(() => {
                 el.costHandWork ||
                 el.costMaterials ||
                 el.costServices ||
-                el.costTransport;
+                el.costTransport ||
+                el.costCars + el.costFuel;
               sum +=
                 mapData.area *
                 (el.costHandWork ||
                   el.costMaterials ||
                   el.costServices ||
-                  el.costTransport);
+                  el.costTransport ||
+                  el.costCars + el.costFuel);
               return (
                 <tr key={el.id}>
                   <td
                     onClick={() => {
+                      setCell(el.cell);
                       setUpdate(true);
                       setSecondOpen(true);
-                      const [second] = map[el.cell].filter(
+                      const [second] = map[el.cell]?.filter(
                         (mat) => mat.techOperationId == el.id
                       );
+
+                      console.log(second);
                       setAkkum(
-                        akk - second.price * (second.consumptionPerHectare || 1)
+                        +akk -
+                          (+second.price *
+                            (+second.consumptionPerHectare || 1) ||
+                            el.costCars + el.costFuel)
                       );
-                      setRes({
-                        id: el.id,
-                        nameOper: el.nameOperation,
-                        price: second.price,
-                        unitsOfCost: second.unitsOfCost,
-                        amount: second.consumptionPerHectare,
-                        unitsOfConsumption: second.unitsOfConsumption,
-                      });
-                      console.log(el.cell);
-                      setCell(el.cell);
+                      if (el.cell == "costMechanical") {
+                        setRes({
+                          id: el.id,
+                          nameOper: el.nameOperation,
+                          fuelConsumption: second.fuelConsumption,
+                          idTractor: second.tractorId,
+                          idMachine: second.agriculturalMachineId,
+                          workingSpeed: second.workingSpeed,
+                          agriculturalMachineId: second.agriculturalMachineId,
+                          unitProductionAggregate:
+                            second.unitProductionAggregate,
+                          operId: el.id,
+                        });
+                      } else {
+                        setRes({
+                          id: el.id,
+                          nameOper: el.nameOperation,
+                          price: second.price,
+                          unitsOfCost: second.unitsOfCost,
+                          amount: second.consumptionPerHectare,
+                          unitsOfConsumption: second.unitsOfConsumption,
+                          operId: el.id,
+                        });
+                      }
                     }}
                   >
                     Ред
@@ -295,24 +318,25 @@ const DevicePage = observer(() => {
                   <td>{el.nameOperation}</td>
                   <td>{mapData.area}</td>
                   <td>{"0"}</td>
-                  <td>{"0"}</td>
-                  <td>{"0"}</td>
+                  <td>{el.costCars * mapData.area || "0"}</td>
+                  <td>{el.costFuel * mapData.area || "0"}</td>
                   <td>{"0"}</td>
                   <td>{el.costHandWork * mapData.area || "0"}</td>
                   <td>{el.costMaterials * mapData.area || "0"}</td>
                   <td>{el.costTransport * mapData.area || "0"}</td>
                   <td>{el.costServices * mapData.area || "0"}</td>
                   <td>
-                    {mapData.area *
+                    {+mapData.area *
                       (el.costHandWork ||
                         el.costMaterials ||
                         el.costServices ||
-                        el.costTransport)}
+                        el.costTransport ||
+                        +el.costCars + +el.costFuel)}
                   </td>
                   <td
                     className="delet"
                     onClick={() => {
-                      deleteOper(map, el.id, el, id, akk);
+                      deleteOper(map, el.id, id, akk);
                     }}
                   >
                     видалити
@@ -323,7 +347,7 @@ const DevicePage = observer(() => {
 
             <tr>
               <td></td>
-              <td>Загальні витрати</td>
+              <td style={{ fontWeight: "bold" }}>Загальні витрати</td>
               <td></td>
               <td></td>
               <td></td>
@@ -414,7 +438,7 @@ const DevicePage = observer(() => {
           <Transport res={res} setRes={setRes} />
         </PopupField>
       ) : cell === "costMechanical" ? (
-        <MechanicalWork
+        <PopupField
           open={secondOpen}
           setOpen={setSecondOpen}
           cell={cell}
@@ -427,7 +451,10 @@ const DevicePage = observer(() => {
           setRes={setRes}
           update={update}
           setUpdate={setUpdate}
-        />
+          func={MechanicalWorkFunc}
+        >
+          <MechanicalWork res={res} setRes={setRes} />
+        </PopupField>
       ) : (
         ""
       )}

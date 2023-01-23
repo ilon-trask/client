@@ -5,13 +5,20 @@ import { authRoutes, publicRoutes } from "./routes";
 import css from "./App.css";
 import { useContext, useEffect } from "react";
 import { Context } from "./index";
-import { getCarts, getSection } from "./http/requests";
+import {
+  getCarts,
+  getSection,
+  getTractor,
+  getMachine,
+} from "./http/requests.ts";
 
 function App() {
   const { map } = useContext(Context);
   useEffect(() => {
     getCarts(map);
     getSection(map);
+    getTractor(map);
+    getMachine(map);
   }, []);
 
   return (

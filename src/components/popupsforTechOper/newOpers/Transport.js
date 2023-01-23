@@ -7,7 +7,7 @@ const Easy = observer(({ res, setRes }) => {
       <h4>Внесіть данні для розрахунку транспортування</h4>
       <div className="d-flex gap-3">
         <div>
-          <p>Назва послуги</p>
+          <p>Назва робіт</p>
           <input
             placeholder="Вкажіть назву"
             type="text"
@@ -24,7 +24,7 @@ const Easy = observer(({ res, setRes }) => {
             type="number"
             value={res?.price}
             onChange={(e) => {
-              setRes({ ...res, price: e.target.value });
+              setRes({ ...res, price: +e.target.value });
             }}
           />
         </div>
